@@ -10,11 +10,13 @@ from src.tools import *
 # print(df)
 import pandas as pd
 lens_df = pd.read_csv(
-    'dataset/movieLens/data/userLikes.csv', header=None).values[1:]
+    '/Users/apple/Desktop/cache_OCO/dataset/movieLens/data/userLikes.csv', header=None).values[1:]
 tweet_df = pd.read_csv(
-    'dataset/movieTweetings/data/userLikes.csv', header=None).values[1:]
+    '/Users/apple/Desktop/cache_OCO/dataset/movieTweetings/data/userLikes.csv', header=None).values[1:]
 comoda_df = pd.read_csv(
-    'dataset/CoMoDa/data/userLikes.csv', header=None).values[1:]
+    '/Users/apple/Desktop/cache_OCO/dataset/CoMoDa/data/userLikes.csv', header=None).values[1:]
+yahoo_df = pd.read_csv(
+    '/Users/apple/Desktop/cache_OCO/dataset/yahoo/data/userLikes.csv', header=None).values[1:]
 
 
 req_lens = {}
@@ -30,8 +32,7 @@ for each in tweet_df:
     _temp = (each[1][1:-1]).split(', ')
     likesList = [int(x) for x in _temp]
     req_tweet[id] = likesList
-    
-    
+     
 req_comoda = {}
 for each in comoda_df:
     id = int(each[0])
@@ -40,7 +41,13 @@ for each in comoda_df:
     req_comoda[id] = likesList
 # print(req_lens)
 # print(req_tweet)
-print(req_comoda)
+# print(req_comoda)
+req_yahoo = {}
+for each in yahoo_df:
+    id = int(each[0])
+    _temp = (each[1][1:-1]).split(', ')
+    likesList = [int(x) for x in _temp]
+    req_yahoo[id] = likesList
 
 
 class User:
@@ -90,6 +97,8 @@ class MovieDataRequest:
             temp_content = random.choice(req_tweet[user_id])
         elif mode == 'movie_comoda':
             temp_content = random.choice(req_comoda[user_id])
+        elif mode == 'movie_yahoo':
+            temp_content = random.choice(req_yahoo[user_id])
             
         temp_bitrate = random.randint(bitrateMinLevel, bitrateMaxLevel)
         self.req = temp_content
