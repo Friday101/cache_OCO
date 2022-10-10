@@ -1,8 +1,8 @@
 clear;
 clc;
 clf;
-%% ¶ÁÊý¾Ý
-data = load('2022.10.06 18.00.45.mat'); %
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+data = load('2022.10.10 17.01.05 movie_lens.mat'); %
 
 % cache_hit_ratio
 cache_hit_ratio_record_FIFO = data.cache_hit_ratio_record_FIFO;
@@ -19,8 +19,8 @@ utility_record_DB = data.utility_record_DB;
 utility_record_SB = data.utility_record_SB;
 
 
-% 10¸öÊý¾ÝµãµÄÆ½¾ùÖµ×÷Îª»­Í¼µã
-% 10¸öÊý¾ÝµãµÄ×î´óÖµ¡¢×îÐ¡Öµ±¸ÓÃ
+% 10ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½Æ½ï¿½ï¿½Öµï¿½ï¿½Îªï¿½ï¿½Í¼ï¿½ï¿½
+% 10ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ð¡Öµï¿½ï¿½ï¿½ï¿½
 cache_hit_ratio_record_FIFO_sampled = [];
 cache_hit_ratio_record_LFU_sampled = [];
 cache_hit_ratio_record_LRU_sampled = [];
@@ -94,7 +94,7 @@ plot((1:1:length(cache_hit_ratio_record_SB_average)),cache_hit_ratio_record_SB_a
 legend('FIFO','LFU','LRU','TOC\_S','DB','SB','Location','Best','fontsize',16);
 
 
-% h2=cdfplot(DP_reward);% ÔÚmatlabÖÐ»­Í¼ÎÒÃÇÊ¹ÓÃcdfplot,Õâ¸öÃüÁî
+% h2=cdfplot(DP_reward);% ï¿½ï¿½matlabï¿½Ð»ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½cdfplot,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 % line_width = 2.2;
 % set(h1,'Linewidth',line_width,'LineStyle','-.');
 % set(h2,'Linewidth',line_width,'LineStyle','-.');
@@ -125,7 +125,7 @@ height = 494.4;
 set(gcf,'WindowStyle','normal');
 set(gcf,'Position',[100,100,width,height]);
 % set(gcf,'Position',[-1000,100,width,height]);
-set(gca,'box','on'); % Í¼ï¿½ï¿½ß¿ï¿?
+set(gca,'box','on'); % Í¼ï¿½ï¿½ß¿ï¿½?
 set(gca,'fontsize',22);
 set(gca,'fontname','TimesRoman');
 grid on;
@@ -137,8 +137,8 @@ liArray=['o','x','+','*','-',':','-.','--','.'];%ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿
 markerArray=['s','p','d','h','^','<'];%ï¿½ï¿½Ê¼ï¿½ï¿½markerï¿½ï¿½ï¿½ï¿½
 
 
-% set(gca,'xticklabel',[]); % xtickï¿½Ç¿Ì¶È£ï¿½Ð¡ï¿½ï¿½ï¿½ß£ï¿½ xticklabel ï¿½Ì¶ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿?
-% set(gca,'yticklabel',[]); % xtickï¿½Ç¿Ì¶È£ï¿½Ð¡ï¿½ï¿½ï¿½ß£ï¿½ xticklabel ï¿½Ì¶ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿?
+% set(gca,'xticklabel',[]); % xtickï¿½Ç¿Ì¶È£ï¿½Ð¡ï¿½ï¿½ï¿½ß£ï¿½ xticklabel ï¿½Ì¶ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½?
+% set(gca,'yticklabel',[]); % xtickï¿½Ç¿Ì¶È£ï¿½Ð¡ï¿½ï¿½ï¿½ß£ï¿½ xticklabel ï¿½Ì¶ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½?
 % set(gca,'ylim',[0 1.0]);
 
 

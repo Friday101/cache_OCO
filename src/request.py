@@ -10,12 +10,11 @@ from src.tools import *
 # print(df)
 import pandas as pd
 lens_df = pd.read_csv(
-    '/Users/apple/Desktop/cache_OCO/dataset/movieLens/data/userLikes.csv', header=None).values[1:]
+    'dataset/movieLens/data/userLikes.csv', header=None).values[1:]
 tweet_df = pd.read_csv(
-    '/Users/apple/Desktop/cache_OCO/dataset/movieTweetings/data/userLikes.csv', header=None).values[1:]
+    'dataset/movieTweetings/data/userLikes.csv', header=None).values[1:]
 comoda_df = pd.read_csv(
-    '/Users/apple/Desktop/cache_OCO/dataset/CoMoDa/data/userLikes.csv', header=None).values[1:]
-
+    'dataset/CoMoDa/data/userLikes.csv', header=None).values[1:]
 
 
 req_lens = {}

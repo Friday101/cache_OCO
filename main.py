@@ -14,6 +14,11 @@ import copy
 from src.tools import *
 from src.cacheEnv import *
 
+# mode = zipf, movie_lens, movie_tweet, movie_comoda
+data_mode = 'zipf'
+# data_mode = 'movie_lens'
+# data_mode = 'movie_tweet'
+# data_mode = 'movie_comoda'
 
 print('dataMode:', data_mode)
 

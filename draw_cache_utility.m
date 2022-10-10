@@ -1,8 +1,8 @@
 clear;
 clc;
 clf;
-%% ¶ÁÊý¾Ý
-data = load('2022.10.06 18.00.45.mat'); %
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+data = load('2022.10.10 17.01.05 movie_lens.mat'); %
 
 % cache_hit_ratio
 cache_hit_ratio_record_FIFO = data.cache_hit_ratio_record_FIFO;
@@ -22,14 +22,14 @@ utility_record_SB = data.utility_record_SB;
 
 
 hold on;
-% 10¸öÊý¾ÝµãµÄÆ½¾ùÖµ×÷Îª»­Í¼µã
-% 10¸öÊý¾ÝµãµÄ×î´óÖµ¡¢×îÐ¡Öµ±¸ÓÃ
+% 10ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½Æ½ï¿½ï¿½Öµï¿½ï¿½Îªï¿½ï¿½Í¼ï¿½ï¿½
+% 10ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ð¡Öµï¿½ï¿½ï¿½ï¿½
 utility_record_FIFO_sampled = [];
 utility_record_LFU_sampled = [];
 utility_record_LRU_sampled = [];
 utility_record_TOC_S_sampled = [];
 
-% ²ÉÑùÊý¾ÝÆ½¾ùÖµ
+% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½Öµ
 step_size = 100;
 for i=1:step_size:length(utility_record_FIFO)-mod(length(utility_record_FIFO),step_size)
       utility_record_FIFO_sampled=[utility_record_FIFO_sampled,mean(utility_record_FIFO(i:i+step_size-1))];
@@ -44,14 +44,14 @@ for i=1:step_size:length(utility_record_TOC_S)-mod(length(utility_record_TOC_S),
       utility_record_TOC_S_sampled=[utility_record_TOC_S_sampled,mean(utility_record_TOC_S(i:i+step_size-1))];
 end
 
-% Æ½¾ùÐ§ÓÃ
+% Æ½ï¿½ï¿½Ð§ï¿½ï¿½
 utility_record_FIFO_average = [];
 utility_record_LFU_average = [];
 utility_record_LRU_average = [];
 utility_record_TOC_S_average = [];
 utility_record_DB_average = [];
 utility_record_SB_average = [];
-% µ½Ä³¸öÊ±¼äµÄÆ½¾ùÖµ
+% ï¿½ï¿½Ä³ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Æ½ï¿½ï¿½Öµ
 for i=1:1:length(utility_record_FIFO)
       utility_record_FIFO_average(i)=mean(utility_record_FIFO(1:i));
 end
@@ -93,7 +93,7 @@ plot((1:1:length(utility_record_SB_average)),utility_record_SB_average,'-.','Lin
 
 legend('FIFO','LFU','LRU','TOC\_S','DB','SB','Location','Best','fontsize',16,'NumColumns',3);
 
-% h2=cdfplot(DP_reward);% ÔÚmatlabÖÐ»­Í¼ÎÒÃÇÊ¹ÓÃcdfplot,Õâ¸öÃüÁî
+% h2=cdfplot(DP_reward);% ï¿½ï¿½matlabï¿½Ð»ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½cdfplot,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 % line_width = 2.2;
 % set(h1,'Linewidth',line_width,'LineStyle','-.');
 % set(h2,'Linewidth',line_width,'LineStyle','-.');
@@ -124,7 +124,7 @@ height = 494.4;
 set(gcf,'WindowStyle','normal');
 set(gcf,'Position',[100,100,width,height]);
 % set(gcf,'Position',[-1000,100,width,height]);
-set(gca,'box','on'); % Í¼ï¿½ï¿½ß¿ï¿?
+set(gca,'box','on'); % Í¼ï¿½ï¿½ß¿ï¿½?
 set(gca,'fontsize',22);
 set(gca,'fontname','Times New Roman');
 grid on;
@@ -136,8 +136,8 @@ liArray=['o','x','+','*','-',':','-.','--','.'];%ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿
 markerArray=['s','p','d','h','^','<'];%ï¿½ï¿½Ê¼ï¿½ï¿½markerï¿½ï¿½ï¿½ï¿½
 
 
-% set(gca,'xticklabel',[]); % xtickï¿½Ç¿Ì¶È£ï¿½Ð¡ï¿½ï¿½ï¿½ß£ï¿½ xticklabel ï¿½Ì¶ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿?
-% set(gca,'yticklabel',[]); % xtickï¿½Ç¿Ì¶È£ï¿½Ð¡ï¿½ï¿½ï¿½ß£ï¿½ xticklabel ï¿½Ì¶ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿?
+% set(gca,'xticklabel',[]); % xtickï¿½Ç¿Ì¶È£ï¿½Ð¡ï¿½ï¿½ï¿½ß£ï¿½ xticklabel ï¿½Ì¶ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½?
+% set(gca,'yticklabel',[]); % xtickï¿½Ç¿Ì¶È£ï¿½Ð¡ï¿½ï¿½ï¿½ß£ï¿½ xticklabel ï¿½Ì¶ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½?
 % set(gca,'ylim',[0 1.0]);
 
 

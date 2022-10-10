@@ -44,7 +44,47 @@ def TOC_S(cp_set,request_user,route_result,time_slot):
 
 
 def TOC_D(cp_set,request_user,route_result,time_slot):
-    pass
+    # 动态约束条件
+    i = route_result
+
+    lambda_1 = 1
+    lambda_2 = 2
+
+    ### 效用梯度    # CP id, 效用最大的码率, 路由量, 对应的效用
+    supergradient_f_t = request_user.transmission_utility[cp_set[i[0]].id][request_user.id] \
+                        - transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity)
+
+    gradient_g_1_t = lambda_1 * base_s*request_user.request.bitrate
+    gradient_g_2_t = lambda_2 * i[2] * transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity)
+
+    gradient_x_t = supergradient_f_t + gradient_g_1_t + gradient_g_2_t +
+    gradient_lambda_1_t = 111
+
+
+    ### 步长 eta
+    Delta_x = math.sqrt(2 * cp_set[i[0]].storageCapacity)
+    J = request_user.transmission_utility[cp_set[i[0]].id][request_user.id]
+    eta = Delta_x / (J * math.sqrt(time_slot))
+
+    ### 更新
+    update_amount = eta * supergradient_f_t
+    tmp_record = copy.deepcopy(cp_set[i[0]].cacheStatus[request_user.request.req][i[1]])
+    cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] += update_amount
+
+    ### 投影
+    update_amount_2 = update_amount
+    if cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] < 0:
+        cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] = 0
+    elif cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] > 1:
+        update_amount_2 = 1 - tmp_record
+        cp_set[i[0]].stored_space += update_amount_2 * base_s * (i[1] + 1)
+        cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] = 1
+    else:
+        cp_set[i[0]].stored_space += update_amount_2 * base_s * (i[1] + 1)
+
+    ##### 最不受欢迎的内容存储量对应减少
+    replace_flag = update_cache_least_popular(cp_set[i[0]], update_amount_2)
+    return replace_flag
 
 # LRU 最近频繁使用 强调使用时间
 def LRU(cp_set,request_user,route_result,time_slot):
