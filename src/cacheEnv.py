@@ -19,7 +19,7 @@ user_set = []
 cp_set = []
 
 # 执行时间
-T = 10000 # 10000
+T = 10000  # 10000
 # 通信半径
 radius_r = 200  # 200
 
@@ -54,16 +54,20 @@ data_mode = 'zipf'
 # data_mode = 'movie_lens'
 # data_mode = 'movie_tweet'
 # data_mode = 'movie_comoda'
+# data_mode = 'movie_yahoo'
 
 if data_mode == 'movie_lens':
     user_num = 100
-    content_libaray_size = 449+1
+    content_libaray_size = 135+1
 elif data_mode == 'movie_tweet':
     user_num = 100
     content_libaray_size = 397+1
 elif data_mode == 'movie_comoda':
     user_num = 120
     content_libaray_size = 1232+1
+elif data_mode == 'movie_yahoo':
+    user_num = 100
+    content_libaray_size = 107+1
 
 
 ################## 数据记录 #################
