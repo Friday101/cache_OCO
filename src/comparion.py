@@ -22,69 +22,136 @@ def TOC_S(cp_set,request_user,route_result,time_slot):
     J = request_user.transmission_utility[cp_set[i[0]].id][request_user.id]
     eta = Delta_x / (J * math.sqrt(time_slot))
 
+    # actual_amount = actual_amount_cal(cp_set[i[0]])
+    # print("TOC-S1    actual:"+str(actual_amount)+"---now storage space:"+str(cp_set[i[0]].stored_space)+"---now storageCapacity"+str(cp_set[i[0]].storageCapacity))
+    # if abs(cp_set[i[0]].stored_space - actual_amount_cal(cp_set[i[0]])) > 100: # 0.0000000000001
+    #     print("error3")
+
     ### 更新
-    update_amount = eta * supergradient_f_t
+    update_amount = round(eta * supergradient_f_t,2)
     tmp_record = copy.deepcopy(cp_set[i[0]].cacheStatus[request_user.request.req][i[1] ])
-    cp_set[i[0]].cacheStatus[request_user.request.req][i[1] ] += update_amount
-
-    ### 投影
-    update_amount_2 = update_amount
-    if cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] < 0:
-        cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] = 0
-    elif cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] > 1:
-        update_amount_2 = 1 - tmp_record
-        cp_set[i[0]].stored_space += update_amount_2*base_s*(i[1]+1)
-        cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] = 1
-    else:
-        cp_set[i[0]].stored_space += update_amount_2 * base_s * (i[1]+1)
-
-    ##### 最不受欢迎的内容存储量对应减少
-    replace_flag = update_cache_least_popular(cp_set[i[0]],update_amount_2)
-    return replace_flag
-
-
-def TOC_D(cp_set,request_user,route_result,time_slot):
-    # 动态约束条件
-    i = route_result
-
-    lambda_1 = 1
-    lambda_2 = 2
-
-    ### 效用梯度    # CP id, 效用最大的码率, 路由量, 对应的效用
-    supergradient_f_t = request_user.transmission_utility[cp_set[i[0]].id][request_user.id] \
-                        - transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity)
-
-    gradient_g_1_t = lambda_1 * base_s*request_user.request.bitrate
-    gradient_g_2_t = lambda_2 * i[2] * transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity)
-
-    gradient_x_t = supergradient_f_t + gradient_g_1_t + gradient_g_2_t +
-    gradient_lambda_1_t = 111
-
-
-    ### 步长 eta
-    Delta_x = math.sqrt(2 * cp_set[i[0]].storageCapacity)
-    J = request_user.transmission_utility[cp_set[i[0]].id][request_user.id]
-    eta = Delta_x / (J * math.sqrt(time_slot))
-
-    ### 更新
-    update_amount = eta * supergradient_f_t
-    tmp_record = copy.deepcopy(cp_set[i[0]].cacheStatus[request_user.request.req][i[1]])
     cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] += update_amount
 
     ### 投影
     update_amount_2 = update_amount
     if cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] < 0:
         cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] = 0
+        cp_set[i[0]].stored_space -= tmp_record * base_s * (i[1] + 1)
+        # print("project1")
+        # actual_amount = actual_amount_cal(cp_set[i[0]])
+        # print("TOC-S1    actual:" + str(actual_amount) + "---now storage space:" + str(
+        #     cp_set[i[0]].stored_space) + "---now storageCapacity" + str(cp_set[i[0]].storageCapacity)+"diff:"+str(cp_set[i[0]].stored_space-actual_amount))
+    elif cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] > 1:
+        update_amount_2 = round(1 - tmp_record,2)
+        cp_set[i[0]].stored_space += update_amount_2*base_s*(i[1]+1)
+        cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] = 1
+        # print("project2")
+        # actual_amount = actual_amount_cal(cp_set[i[0]])
+        # print("TOC-S12    actual:" + str(actual_amount) + "---now storage space:" + str(
+        #     cp_set[i[0]].stored_space) + "---now storageCapacity" + str(cp_set[i[0]].storageCapacity)+"diff:"+str(cp_set[i[0]].stored_space-actual_amount))
+    else:
+        cp_set[i[0]].stored_space += update_amount_2 * base_s * (i[1]+1)
+        # print("project3")
+        # actual_amount = actual_amount_cal(cp_set[i[0]])
+        # print("TOC-S13    actual:" + str(actual_amount) + "---now storage space:" + str(
+        #     cp_set[i[0]].stored_space) + "---now storageCapacity" + str(cp_set[i[0]].storageCapacity)+"diff:"+str(cp_set[i[0]].stored_space-actual_amount))
+
+
+    # actual_amount = actual_amount_cal(cp_set[i[0]])
+    # print("TOC-S2    actual:"+str(actual_amount)+"---now storage space:"+str(cp_set[i[0]].stored_space)+"---now storageCapacity"+str(cp_set[i[0]].storageCapacity))
+    # if abs(cp_set[i[0]].stored_space - actual_amount_cal(cp_set[i[0]])) > 100:
+    #     print("error4")
+
+    ##### 最不受欢迎的内容存储量对应减少
+    replace_flag = update_cache_least_popular(cp_set[i[0]],update_amount_2)
+    return replace_flag
+
+
+def TOC_E(cp_set,request_user,route_result,time_slot):
+    # 动态约束条件
+    i = route_result
+
+    ### 步长 eta
+    Delta_x = math.sqrt(2 * cp_set[i[0]].storageCapacity)
+    # J = request_user.transmission_utility[cp_set[i[0]].id][request_user.id]
+    eta = math.sqrt( Delta_x / time_slot )  # (J * math.sqrt(time_slot))
+
+    delta = 5 * pow( cp_set[i[0]].cacheStatus[request_user.request.req,request_user.request.bitrate] ,2)
+
+    ### 效用梯度    # CP id, 效用最大的码率, 路由量, 对应的效用
+    supergradient_f_t = request_user.transmission_utility[cp_set[i[0]].id][request_user.id] \
+                        - transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity)
+
+    # 方案1
+    gradient_g_1_t = cp_set[i[0]].lambda_1 * base_s * request_user.request.bitrate
+    gradient_g_2_t = cp_set[i[0]].lambda_2 * i[2] * transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity)
+    gradient_x_t = supergradient_f_t + gradient_g_1_t + gradient_g_2_t
+    gradient_lambda_1_t = cp_set[i[0]].cacheStatus[request_user.request.req,request_user.request.bitrate] * base_s * request_user.request.bitrate - cp_set[i[0]].Constraint_C[time_slot-1] - eta * cp_set[i[0]].lambda_1 * delta
+    gradient_lambda_2_t = i[2] * base_s * request_user.request.bitrate * transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity) - cp_set[i[0]].Constraint_H[time_slot-1] - eta * cp_set[i[0]].lambda_2 * delta
+
+    # 方案2
+    # gradient_g_1_t = cp_set[i[0]].lambda_1[request_user.request.req,request_user.request.bitrate] * base_s * request_user.request.bitrate
+    # gradient_g_2_t = cp_set[i[0]].lambda_2[request_user.request.req,request_user.request.bitrate] * i[2] * transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity)
+    # gradient_x_t = supergradient_f_t + gradient_g_1_t + gradient_g_2_t
+    # gradient_lambda_1_t = cp_set[i[0]].cacheStatus[request_user.request.req,request_user.request.bitrate] * base_s * request_user.request.bitrate - cp_set[i[0]].Constraint_C[time_slot] - eta * cp_set[i[0]].lambda_1[request_user.request.req,request_user.request.bitrate] * delta
+    # gradient_lambda_2_t = i[2] * base_s * request_user.request.bitrate * transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity) - cp_set[i[0]].Constraint_H[time_slot]  - eta * cp_set[i[0]].lambda_2[request_user.request.req,request_user.request.bitrate] * delta
+
+    # 约束违反状况
+    g_1 = cp_set[i[0]].stored_space - cp_set[i[0]].Constraint_C[time_slot-1]
+    g_2 = i[2] * base_s * request_user.request.bitrate * transcode_utility(i[1], request_user.request.bitrate, cp_set[i[0]].computingCapacity) - cp_set[i[0]].Constraint_H[time_slot-1]
+    cp_set[i[0]].Constraint_Violation_C[time_slot-1] = g_1
+    cp_set[i[0]].Constraint_Violation_H[time_slot-1] = g_2
+
+    # actual_amount = actual_amount_cal(cp_set[i[0]])
+    # print("TOC-E1    actual:"+str(actual_amount)+"---now storage space:"+str(cp_set[i[0]].stored_space)+"---now storageCapacity"+str(cp_set[i[0]].storageCapacity))
+    # if abs(cp_set[i[0]].stored_space - actual_amount_cal(cp_set[i[0]])) > 5:
+    #     print("error1")
+
+    ### 缓存变量更新
+    update_amount = eta * gradient_x_t
+    tmp_record = copy.deepcopy(cp_set[i[0]].cacheStatus[request_user.request.req][i[1]])
+    cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] += update_amount
+
+    ### 对偶变量更新
+    ##### 方案1
+    cp_set[i[0]].lambda_1 = cp_set[i[0]].lambda_1 + eta * gradient_lambda_1_t
+    cp_set[i[0]].lambda_2 = cp_set[i[0]].lambda_2 + eta * gradient_lambda_2_t
+
+    cp_set[i[0]].lambda_1_list.append( cp_set[i[0]].lambda_1 )
+    cp_set[i[0]].lambda_2_list.append(cp_set[i[0]].lambda_2)
+
+    # actual_amount = actual_amount_cal(cp_set[i[0]])
+    # print("TOC-E2    actual:"+str(actual_amount)+"---now storage space:"+str(cp_set[i[0]].stored_space)+"---now storageCapacity"+str(cp_set[i[0]].storageCapacity))
+    # if abs(cp_set[i[0]].stored_space - actual_amount_cal(cp_set[i[0]])) > 5:
+    #     print("error2")
+
+    ##### 方案2
+    # cp_set[i[0]].lambda_1[request_user.request.req,request_user.request.bitrate] = cp_set[i[0]].lambda_1[request_user.request.req,request_user.request.bitrate] + eta * gradient_lambda_1_t
+    # cp_set[i[0]].lambda_2[request_user.request.req,request_user.request.bitrate] = cp_set[i[0]].lambda_2[request_user.request.req,request_user.request.bitrate] + eta * gradient_lambda_2_t
+
+    ### 投影
+    update_amount_2 = update_amount
+    if cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] < 0:
+        cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] = 0
+        cp_set[i[0]].stored_space -= tmp_record * base_s * (i[1] + 1)
+        # print("project E-1")
     elif cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] > 1:
         update_amount_2 = 1 - tmp_record
         cp_set[i[0]].stored_space += update_amount_2 * base_s * (i[1] + 1)
         cp_set[i[0]].cacheStatus[request_user.request.req][i[1]] = 1
+        # print("project E-2")
     else:
         cp_set[i[0]].stored_space += update_amount_2 * base_s * (i[1] + 1)
+        # print("project E-3")
+
+    # actual_amount = actual_amount_cal(cp_set[i[0]])
+    # print("TOC-E3    actual:"+str(actual_amount)+"---now storage space:"+str(cp_set[i[0]].stored_space)+"---now storageCapacity"+str(cp_set[i[0]].storageCapacity))
+    # if abs(cp_set[i[0]].stored_space - actual_amount_cal(cp_set[i[0]])) > 5:
+    #     print("error3")
 
     ##### 最不受欢迎的内容存储量对应减少
     replace_flag = update_cache_least_popular(cp_set[i[0]], update_amount_2)
-    return replace_flag
+    return replace_flag,g_1,g_2
 
 # LRU 最近频繁使用 强调使用时间
 def LRU(cp_set,request_user,route_result,time_slot):
@@ -163,6 +230,8 @@ def FIFO(cp_set,request_user,route_result,time_slot):
 def static_benchmark(request_list,request_list_summary,request_list_summary_times,cp_set,user_set,cp_o_set):
     t = 0
     cache_hit_ratio_record_SB = []
+    cache_hit_ratio_record_SB_transcode = []
+    cache_hit_ratio_record_SB_direct = []
     utility_record_SB = []
     # 缓存决策 - 静态
     for i in cp_set:
@@ -185,13 +254,17 @@ def static_benchmark(request_list,request_list_summary,request_list_summary_time
         # 计算当前时隙效用
         user_set[request_list[t][0]].request.req = request_list[t][1]
         user_set[request_list[t][0]].request.bitrate = request_list[t][2]
-        Matching_Pool_SB, Routing_Result_SB, Routing_Amount_SB, cache_hit_t_SB = route(cp_set,
+        Matching_Pool_SB, Routing_Result_SB, Routing_Amount_SB, cache_hit_t_SB,cache_hit_t_transcode_SB, cache_hit_t_direct_SB = route(cp_set,
                                                                                        user_set[request_list[t][0]],
                                                                                        request_list[t][0], t)
         if len(cache_hit_t_SB) > 0:
             cache_hit_ratio_record_SB.append(sum(cache_hit_t_SB) / len(cache_hit_t_SB))
+            cache_hit_ratio_record_SB_transcode.append(sum(cache_hit_t_transcode_SB) / len(cache_hit_t_transcode_SB))
+            cache_hit_ratio_record_SB_direct.append(sum(cache_hit_t_direct_SB) / len(cache_hit_t_direct_SB))
         else:
             cache_hit_ratio_record_SB.append(0)
+            cache_hit_ratio_record_SB_transcode.append(0)
+            cache_hit_ratio_record_SB_direct.append(0)
 
         if not cache_hit_ratio_record_SB[-1]:
             utility_record_SB.append(0)
@@ -203,24 +276,33 @@ def static_benchmark(request_list,request_list_summary,request_list_summary_time
 
         t+=1
 
-    return cache_hit_ratio_record_SB,utility_record_SB
+    return cache_hit_ratio_record_SB,utility_record_SB,cache_hit_ratio_record_SB_transcode,cache_hit_ratio_record_SB_direct
 
 # 在t时刻缓存今后能取得最大收益的内容    可以进一步记录regret水平
 def dynamic_benchmark(request_list,request_list_summary,request_list_summary_times,cp_set,user_set,cp_o_set):
     #
     t = 0
     cache_hit_ratio_record_DB = []
+    cache_hit_ratio_record_DB_transcode = []
+    cache_hit_ratio_record_DB_direct = []
+
     utility_record_DB = []
+    cache_replace_frequency_DB = []
+    replace_flag_DB = False
     while t < T:
         # print("----------Time slot - " + str(t) + "----------")
         # 计算当前时隙效用
         user_set[request_list[t][0]].request.req = request_list[t][1]
         user_set[request_list[t][0]].request.bitrate = request_list[t][2]
-        Matching_Pool_DB, Routing_Result_DB, Routing_Amount_DB, cache_hit_t_DB = route(cp_set,user_set[request_list[t][0]],request_list[t][0],t)
+        Matching_Pool_DB, Routing_Result_DB, Routing_Amount_DB, cache_hit_t_DB,cache_hit_t_transcode_DB, cache_hit_t_direct_DB = route(cp_set,user_set[request_list[t][0]],request_list[t][0],t)
         if len(cache_hit_t_DB) > 0:
             cache_hit_ratio_record_DB.append(sum(cache_hit_t_DB) / len(cache_hit_t_DB))
+            cache_hit_ratio_record_DB_transcode.append(sum(cache_hit_t_transcode_DB) / len(cache_hit_t_transcode_DB))
+            cache_hit_ratio_record_DB_direct.append(sum(cache_hit_t_direct_DB) / len(cache_hit_t_direct_DB))
         else:
             cache_hit_ratio_record_DB.append(0)
+            cache_hit_ratio_record_DB_transcode.append(0)
+            cache_hit_ratio_record_DB_direct.append(0)
 
         if not cache_hit_ratio_record_DB[-1]:
             utility_record_DB.append(0)
@@ -240,7 +322,9 @@ def dynamic_benchmark(request_list,request_list_summary,request_list_summary_tim
                     i.stored_space += updated_amount * base_s * (cache_bitrate+1)
                     i.cacheStatus[cache_content, cache_bitrate] = 1
                     if i.stored_space + updated_amount * base_s * (cache_bitrate+1) > i.storageCapacity:
-                        update_cache_least_popular(i,updated_amount)
+                        replace_flag_DB = update_cache_least_popular(i,updated_amount)
+
+        cache_replace_frequency_DB.append( replace_flag_DB )
         t+=1
 
         # 缓存更新 方案1 所有cp按后面的请求频率缓存内容 初期效果好，后期越来越差
@@ -280,4 +364,4 @@ def dynamic_benchmark(request_list,request_list_summary,request_list_summary_tim
         #         best_index = np.argmax(preference_compute)
         #         index_row = int(best_index / preference_compute.shape[0])
         #         index_col = best_index % preference_compute.shape[1]
-    return cache_hit_ratio_record_DB,utility_record_DB
+    return cache_hit_ratio_record_DB,utility_record_DB,cache_replace_frequency_DB,cache_hit_ratio_record_DB_transcode,cache_hit_ratio_record_DB_direct

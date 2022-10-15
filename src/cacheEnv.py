@@ -21,10 +21,10 @@ cp_set = []
 # 执行时间
 T = 10000  # 10000
 # 通信半径
-radius_r = 200  # 200
+radius_r = 250  # 200
 
 # 文件库大小
-content_libaray_size = 100  # 50
+content_libaray_size = 60  # 50
 
 # 基础传输效用
 base_t = 0.3
@@ -34,7 +34,7 @@ base_s = 10
 
 # content size
 bitrateMinLevel = 0
-bitrateMaxLevel = 3
+bitrateMaxLevel = 5
 
 # 转码开销控制因子
 # vartheta = 2 # 控制计算资源对转码的影响
@@ -50,7 +50,9 @@ computeMin = 0
 
 
 # 数据集
-data_mode = 'zipf'
+data_mode_set = ['zipf','movie_lens','movie_tweet','movie_comoda','movie_yahoo']
+data_mode = data_mode_set[3]
+# data_mode = 'zipf'
 # data_mode = 'movie_lens'
 # data_mode = 'movie_tweet'
 # data_mode = 'movie_comoda'
@@ -72,17 +74,33 @@ elif data_mode == 'movie_yahoo':
 
 ################## 数据记录 #################
 cache_hit_ratio_record_TOC_S = []
+cache_hit_ratio_record_TOC_S_transcode = []
+cache_hit_ratio_record_TOC_S_direct = []
 utility_record_TOC_S = []
 cache_replace_frequency_TOC_S = []
 
+cache_hit_ratio_record_TOC_E = []
+cache_hit_ratio_record_TOC_E_transcode = []
+cache_hit_ratio_record_TOC_E_direct = []
+utility_record_TOC_E = []
+cache_replace_frequency_TOC_E = []
+constraint_violation_g_1_TOC_E = []
+constraint_violation_g_2_TOC_E = []
+
 cache_hit_ratio_record_LRU = []
+cache_hit_ratio_record_LRU_transcode = []
+cache_hit_ratio_record_LRU_direct = []
 utility_record_LRU = []
 cache_replace_frequency_LRU = []
 
 cache_hit_ratio_record_LFU = []
+cache_hit_ratio_record_LFU_transcode = []
+cache_hit_ratio_record_LFU_direct = []
 utility_record_LFU = []
 cache_replace_frequency_LFU = []
 
 cache_hit_ratio_record_FIFO = []
+cache_hit_ratio_record_FIFO_transcode = []
+cache_hit_ratio_record_FIFO_direct = []
 utility_record_FIFO = []
 cache_replace_frequency_FIFO = []

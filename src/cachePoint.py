@@ -2,10 +2,11 @@ import numpy as np
 from src.cacheEnv import *
 
 class cachePoint:
-    def __init__(self, id, x, y, computingCapacity, storageCapacity):
+    def __init__(self, id, x, y, computed_frequency, computingCapacity, storageCapacity):
         self.storageCapacity = storageCapacity
         self.stored_space = 0
         self.computingCapacity = computingCapacity
+        self.computed_frequency = computed_frequency
         self.connection = None
         self.transmission_utility = np.zeros((cp_num,user_num))
         self.linkMatrix = np.zeros((cp_num,user_num)) # 元素是字典，连接对象和传输效用
@@ -18,5 +19,16 @@ class cachePoint:
         self.y = y
         self.id = id
         self.cache_local_preference = None
-        
-        
+        self.lambda_1 = 1
+        self.lambda_2 = 1
+        self.lambda_1_list = []
+        self.lambda_2_list = []
+        # self.lambda_1 = np.zeros([content_libaray_size,bitrateMaxLevel+1])
+        # self.lambda_2 = np.zeros([content_libaray_size,bitrateMaxLevel+1])
+        self.Constraint_C = np.zeros(T)
+        self.Constraint_H = np.zeros(T)
+        self.Constraint_Violation_C = np.zeros(T)
+        self.Constraint_Violation_H = np.zeros(T)
+        self.nb_len = []
+
+
